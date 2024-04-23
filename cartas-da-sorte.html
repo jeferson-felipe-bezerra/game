@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Jogo de Cartas da Sorte</title>
+<style>
+  body {
+    font-family: 'Arial', sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 20px;
+    background-image: url('https://img.freepik.com/fotos-gratis/elementos-de-viagem-no-quadro-negro_23-2148077181.jpg?t=st=1713840288~exp=1713843888~hmac=abfaf0842bae35c938aed6710a0f0b5fcd3b3c80ed38552b003f517b6a6656b7&w=740');
+    color: rgb(245, 240, 240);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: right;
+  }
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    justify-content: center;
+  }
+  .card {
+    width: 180px;
+    height: 180px;
+    background-color: #FFF;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    text-align: center;
+    margin-left: 20%;
+  }
+  .card:hover {
+    transform: scale(1.05);
+  }
+  .card img {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    display: none;
+  }
+  .hidden img {
+    display: block;
+  }
+  #victoryMessage {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 10;
+  }
+  #victoryMessage p {
+    color: white;
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
+  #closeButton {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+  }
+  /* Estilos para o carrossel de imagens */
+  .carousel {
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    border-radius: 10%;
+  }
+  .carousel img {
+    max-width: 100%;
+    display: block;
+    transition: transform 0.5s ease;
+  }
+  .carousel-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+  .carousel-button {
+    padding: 5px 10px;
+    margin: 0 5px;
+    background-color: #333;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<h1>Encontre as 3 cartas iguais </h1>
+
+<button id="closeButton" onclick="closeGame()">Fechar Jogo</button>
+
+<div id="game" class="grid">
+  <!-- As cartas serão criadas pelo JavaScript -->
+</div>
+
+<div id="victoryMessage">
+  <p>Feliz Aniversário Samara, que Deus realize seus maiores sonhos e que seus desejos de viagens se concretizem!</p>
+  
+  <!-- Carrossel de imagens -->
+  <div class="carousel" id="carousel">
+    <img src="https://as2.ftcdn.net/v2/jpg/02/96/15/35/1000_F_296153501_B34baBHDkFXbl5RmzxpiOumF4LHGCvAE.jpg" alt="Imagem 1">
+    <img src="https://as1.ftcdn.net/v2/jpg/02/09/70/56/1000_F_209705645_b78HGJI1i1mxqLwMYA7z1m3VvCxgxJFO.jpg" alt="Imagem 2">
+    <img src="https://as2.ftcdn.net/v2/jpg/03/10/42/27/1000_F_310422728_gvGj4cxa8MZDbJOPws9MgQXUslt7jpxF.jpg" alt="Imagem 3">
+    <img src="https://as2.ftcdn.net/v2/jpg/01/56/21/31/1000_F_156213190_GdCUPMZ9B45AyItiQr6ha2oWTgRQaw8g.jpg" alt="Imagem 4">
+    <img src="https://as1.ftcdn.net/v2/jpg/00/57/43/60/1000_F_57436046_sBhDf6ayrC2AR18JtzIp4nkTOAvLGlHy.jpg" alt="Imagem 5">
+    <img src="https://as2.ftcdn.net/v2/jpg/07/14/76/57/1000_F_714765774_9fumLLVgy4uacqm1Usqcaea4FNwiPq0z.jpg" alt="Imagem 6">
+    <!-- Adicione mais imagens aqui até imagem10.jpg -->
+  </div>
+  <div class="carousel-buttons">
+    <button class="carousel-button" onclick="moveCarousel(-1)">Anterior</button>
+    <button class="carousel-button" onclick="moveCarousel(1)">Próximo</button>
+  </div>
+  <audio controls id="myAudio">
+    <source src="Abertura FRIENDS Legendado - I'll Be There For You.mp3" type="audio/mpeg">
+    Seu navegador não suporta o elemento de áudio.
+  </audio>
+</div>
+
+<script>
+// Array com os URLs das imagens
+const images = [
+  'https://img.freepik.com/vetores-premium/viagem-fundo_23-2148072432.jpg?w=740',
+  'https://img.freepik.com/vetores-premium/viagem-fundo_23-2148072432.jpg?w=740',
+  'https://img.freepik.com/vetores-premium/viagem-fundo_23-2148072432.jpg?w=740',
+  'https://img.freepik.com/fotos-gratis/mulher-com-chapeu-sentado-na-praia-de-cadeiras-na-bela-praia-tropical-mulher-relaxando-em-uma-praia-tropical-na-ilha-de-koh-nangyuan_335224-1110.jpg?t=st=1713839380~exp=1713842980~hmac=a3c9a354ddfd9553fd8744ea0a32f908fbd9b0ed8a51f34b5f007206a08d24e3&w=740',
+  'https://img.freepik.com/fotos-gratis/mulher-com-chapeu-sentado-na-praia-de-cadeiras-na-bela-praia-tropical-mulher-relaxando-em-uma-praia-tropical-na-ilha-de-koh-nangyuan_335224-1110.jpg?t=st=1713839380~exp=1713842980~hmac=a3c9a354ddfd9553fd8744ea0a32f908fbd9b0ed8a51f34b5f007206a08d24e3&w=740',
+  'https://img.freepik.com/fotos-gratis/familia-feliz-de-tiro-medio-no-aeroporto_23-2149272153.jpg?t=st=1713839487~exp=1713843087~hmac=90f11383e93ac9bb0bdca965926b0018b6b2797a93decd5bd13ccc533f37da23&w=740',
+  'https://img.freepik.com/fotos-gratis/adultos-de-tiro-completo-viajando-com-crianca_23-2149272093.jpg?t=st=1713839605~exp=1713843205~hmac=8bf20c3266e755c484588888bcf9219b85291cdd7a257e74127799db9a7d39f0&w=740',
+  'https://as1.ftcdn.net/v2/jpg/01/89/74/00/1000_F_189740072_zjpjlTeD6kIvGaZc4c9LxHNZdANjiduY.jpg'
+  // Adicione mais URLs de imagens conforme necessário
+];
+// Embaralhar as imagens
+images.sort(() => 0.5 - Math.random());
+
+let selectedCards = [];
+let matchedPairs = 0;
+
+function selectCard(card) {
+  if (!card.classList.contains('matched') && selectedCards.length < 3) {
+    card.firstChild.style.display = 'block';
+    selectedCards.push(card);
+
+    if (selectedCards.length === 3) {
+      const firstImage = selectedCards[0].firstChild.src;
+      const secondImage = selectedCards[1].firstChild.src;
+      const thirdImage = selectedCards[2].firstChild.src;
+
+      if (firstImage === secondImage && firstImage === thirdImage) {
+        selectedCards.forEach(card => card.classList.add('matched'));
+        matchedPairs++;
+        selectedCards = [];
+        showVictoryMessage(); // A mensagem de vitória é exibida independentemente do número de pares encontrados
+      } else {
+        setTimeout(() => {
+          selectedCards.forEach(card => card.firstChild.style.display = 'none');
+          selectedCards = [];
+        }, 1000);
+      }
+    }
+  }
+}
+
+function createCard(imageSrc) {
+  const card = document.createElement('div');
+  card.classList.add('card');
+  const img = document.createElement('img');
+  img.src = imageSrc;
+  card.appendChild(img);
+  card.addEventListener('click', () => selectCard(card));
+  return card;
+}
+
+function showVictoryMessage() {
+  document.getElementById('victoryMessage').style.display = 'flex'; // Exibe a mensagem de vitória
+  document.getElementById('myAudio').play(); // Inicia a reprodução do áudio
+}
+
+function closeGame() {
+  var game = document.getElementById('game');
+  var victoryMessage = document.getElementById('victoryMessage');
+  game.style.display = 'none';
+  victoryMessage.style.display = 'none';
+}
+
+const game = document.getElementById('game');
+images.forEach(imageSrc => {
+  game.appendChild(createCard(imageSrc));
+});
+
+// Script para o carrossel de imagens automático
+let currentImageIndex = 0;
+const carouselImages = document.querySelectorAll('#carousel img');
+const totalCarouselImages = carouselImages.length;
+
+function moveCarousel(direction) {
+  if (direction === -1 && currentImageIndex > 0) {
+    currentImageIndex--;
+  } else if (direction === 1 && currentImageIndex < totalCarouselImages - 1) {
+    currentImageIndex++;
+  } else if (direction === undefined) {
+    currentImageIndex = (currentImageIndex + 1) % totalCarouselImages;
+  }
+  const offset = currentImageIndex * -100;
+  carouselImages.forEach(img => img.style.transform = `translateX(${offset}%)`);
+}
+
+// Configura o carrossel para mudar imagens a cada 3 segundos
+setInterval(() => moveCarousel(), 3000);
+
+// Inicializa o carrossel na primeira imagem
+moveCarousel();
+</script>
+
+</body>
+</html>
