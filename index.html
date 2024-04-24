@@ -110,26 +110,49 @@
     border: none;
     cursor: pointer;
   }
-  /* Media Queries */
+  /* Estilos base */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+  justify-content: center;
+}
+
+/* Media Queries */
 @media only screen and (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr); /* Duas cartas por linha */
+  }
   .card {
-    width: 100%;
-    margin-left: 0;
+    width: auto; /* A largura será automaticamente ajustada */
+    height: auto; /* A altura será automaticamente ajustada */
+    margin: 10px; /* Espaçamento entre as cartas */
   }
   .carousel {
-    max-width: 100%;
+    max-width: 100%; /* O carrossel ocupa toda a largura disponível */
   }
 }
 
 @media only screen and (min-width: 601px) and (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr); /* Três cartas por linha */
+  }
   .card {
-    width: calc(50% - 10px);
+    width: auto;
+    height: auto;
+    margin: 15px;
   }
 }
 
 @media only screen and (min-width: 901px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr); /* Quatro cartas por linha */
+  }
   .card {
-    width: calc(25% - 10px);
+    width: auto;
+    height: auto;
+    margin: 20px;
   }
 }
 
